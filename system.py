@@ -1,9 +1,14 @@
 #!/usr/bin/python3
 import os
 import sys
+import subprocess
 
 if not os.geteuid()==0:
     sys.exit('This script must be run as root!')
+
+# uncomment this line for update & root password
+# os.system("passwd")
+# os.system("sudo apt-get update && sudo apt-get upgrade -y")
 
 
 # Getting user info from /etc/passwd
@@ -46,33 +51,22 @@ with open("groups.txt", "r") as f:
         grouplist += line
 
 ###SUDOERS###
-# Get sudoers info from /etc/sudoers
-sudoers = os.system("cat /etc/sudoers > .sudoers")
+# Get sudoers info from /etc/sudoers and print findings
+results = subprocess.run(["cat", "/etc/sudoers"], stdout=subprocess.PIPE)
 
-# Making sudoers list from output
-sudoerslist = ''
+print("SUDO PERMISSIONS:")
+sudoerslist = results.stdout.decode().splitlines()
+for line in sudoerslist:
+    if line.startswith("Defaults"):
+        continue
+    if "%" in line:
+        print("Group: ", line)
+        continue
+    if "=" in line:
+        print("User: ", line)
 
-with open(".sudoers", "r") as f:
-    for line in f:
-        if "ALL" in line:
-            sudoerslist += line
-            #.split('A')[:1]
-
-for line in sudoerslist.splitlines():
-    newline = str(line.split('A')[:1])
-    #print(newline)
-
-# Print various sensitive groups
-print("\nSENSITIVE GROUPS:")
-for line in grouplist.splitlines():
-    for i in sudoerslist.splitlines():
-        newline = str(i.split('A')[:1]).strip("[]'")
-        #print(newline)
-        if str(i.split('A')[:1]).strip("[]'") in line:
-            print(line)
-        #print(line)
-print("Full groups in groups.txt...\n")
-
+os.system("cat /etc/group > groups.txt")
+print("Full groups saved to groups.txt...")
 
 # Show files with sensitive permissions
 print("\nSENSITIVE PERMISSIONS: (Should be -rw-r--r-- and -rw-r-----)")
