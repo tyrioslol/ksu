@@ -1,4 +1,4 @@
-Linux Cheatsheet:
+**Linux Cheatsheet:**
 
 Set root password:
 ```
