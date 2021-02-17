@@ -5,6 +5,29 @@ import subprocess
 if not os.geteuid()==0:
     sys.exit('This script must be run as root!')
 
+while True:
+    print("I'm a dumb script. What OS are you running on? (ubuntu/debian/centos/fedora)")
+    ans = input()
+    if ans == "fedora":
+        print("Fedora selected.")
+        _os = "cent"
+        break
+    if ans == "centos":
+        print("CentOS selected.")
+        _os = "cent"
+        break
+    if ans == "ubuntu":
+        print("Ubuntu selected.")
+        _os = "debian"
+        break
+    if ans == "debian":
+        print("Debian selected.")
+        _os = "debian"
+        break
+    if ans != "ubuntu" or ans != "debian" or ans != "centos" or ans != "fedora":
+        print("Invalid: Must be ubuntu/debian/centos/fedora")
+        continue
+
 # uncomment this line for update & root password
 # os.system("passwd")
 # os.system("sudo apt-get update && sudo apt-get upgrade -y")
@@ -51,22 +74,42 @@ with open("groups.txt", "r") as f:
     for line in f:
         grouplist += line
 
-###SUDOERS###
-# Get sudoers info from /etc/sudoers and print findings
-results = subprocess.run(["cat", "/etc/sudoers"], stdout=subprocess.PIPE)
 
-print("SUDO PERMISSIONS:")
-sudoerslist = results.stdout.decode().splitlines()
-for line in sudoerslist:
-    if line.startswith("Defaults"):
-        continue
-    if line.startswith("#"):
-        continue
-    if "%" in line:
-        print("Group: ", line)
-        continue
-    if "=" in line:
-        print("User: ", line)
+if _os == "cent":
+    ###SUDOERS###
+    # Get sudoers info from /etc/sudoers and print findings
+    results = subprocess.check_output(["cat", "/etc/sudoers"])
+
+    print("SUDO PERMISSIONS:")
+    sudoerslist = results.decode().splitlines()
+    for line in sudoerslist:
+        if line.startswith("Defaults"):
+            continue
+        if line.startswith("#"):
+            continue
+        if "%" in line:
+            print("Group: ", line)
+            continue
+        if "=" in line:
+            print("User: ", line)
+
+elif _os == "debian":
+    ###SUDOERS###
+    # Get sudoers info from /etc/sudoers and print findings
+    results = subprocess.run(["cat", "/etc/sudoers"], stdout=subprocess.PIPE)
+
+    print("SUDO PERMISSIONS:")
+    sudoerslist = results.stdout.decode().splitlines()
+    for line in sudoerslist:
+        if line.startswith("Defaults"):
+            continue
+        if line.startswith("#"):
+            continue
+        if "%" in line:
+            print("Group: ", line)
+            continue
+        if "=" in line:
+            print("User: ", line)
 
 os.system("cat /etc/group > groups.txt")
 print("Full groups saved to groups.txt...")
