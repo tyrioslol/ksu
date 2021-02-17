@@ -9,6 +9,11 @@ Defaults    mail_badpass
 Defaults    secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
 Defaults    rootpw
 ```
+Update:
+```
+sudo apt-get update && sudo apt-get upgrade -y
+sudo yum update
+```
 
 Show Users: 
 ```
@@ -38,7 +43,6 @@ Install nmap:
 sudo apt-get install net-tools
 sudo apt install nmap
 sudo yum install nmap
-sudo dnf install nmap
 ```
 Use nmap to enumerate services:
 ```
@@ -107,7 +111,9 @@ firewall-config
 ```
 CentOS Firewall:
 ```
-firewall-cmd
+sudo firewall-cmd --list-all
+sudo firewall-cmd --add-service=http <- allows communication over http.
+sudo firewall-cmd --add-port=5000-6000/tcp <- allows communication over ports 5000 to 6000.
 https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-using-firewalld-on-centos-7
 ```
 
