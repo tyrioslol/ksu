@@ -107,7 +107,7 @@ if _os == "debian":
 
     # Importing linpeas
     print("\nGetting linpeas and running local scan...")
-    os.system("wget https://raw.githubusercontent.com/carlospolop/privilege-escalation-awesome-scripts-suite/master/linPEAS/linpeas.sh && chmod +x linpeas.sh")
+    os.system("wget https://raw.githubusercontent.com/carlospolop/privilege-escalation-awesome-scripts-suite/master/linPEAS/linpeas.sh && chmod +x linpeas.sh | 2>/dev/null")
 
 if _os == "cent":
     # Install git
@@ -153,7 +153,7 @@ if _os == "cent":
 
     # Importing linpeas
     print("\nGetting linpeas and running local scan...")
-    os.system("wget https://raw.githubusercontent.com/carlospolop/privilege-escalation-awesome-scripts-suite/master/linPEAS/linpeas.sh && chmod +x linpeas.sh")
+    os.system("wget https://raw.githubusercontent.com/carlospolop/privilege-escalation-awesome-scripts-suite/master/linPEAS/linpeas.sh && chmod +x linpeas.sh | 2>/dev/null")
 
 while True:
     print("\nWould you like to run linpeas now? (y/n)")
