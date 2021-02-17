@@ -98,12 +98,15 @@ View Auth Logs:
 Install UFW:
 ```
 sudo apt-get install ufw
-sudo yum install epel-release
-sudo yum install --enablerepo=”epel” ufw
-
 sudo ufw enable
 sudo ufw status
 ```
+Fedora Firewall:
+```
+firewall-config
+```
+
+
 
 Configure UFW:
 ```
