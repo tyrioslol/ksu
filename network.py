@@ -4,6 +4,7 @@ import sys
 if not os.geteuid()==0:
     sys.exit('This script must be run as root!')
 
+# what os are you
 while True:
     print("I'm a dumb script. What OS are you running on? (ubuntu/debian/centos/fedora)")
     ans = input()
@@ -161,6 +162,19 @@ while True:
     if ans == "y":
         print("INFO: linpeas is present on your system.\nSimply su into another user and run the script with ./linpeas.sh.")
         print("Done")
+        break
+    if ans == "n":
+        print("Moving on...")
+        break
+    if ans != "y" or ans != "n":
+        print("Invalid: Must be y/n")
+        continue
+        
+ while True:
+    print("\nIt's recommended to reboot after updating. Would you like to reboot now? (y/n)")
+    ans = input()
+    if ans == "y":
+        os.system("reboot")
         break
     if ans == "n":
         print("Moving on...")
