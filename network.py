@@ -170,7 +170,7 @@ while True:
         print("Invalid: Must be y/n")
         continue
         
- while True:
+while True:
     print("\nIt's recommended to reboot after updating. Would you like to reboot now? (y/n)")
     ans = input()
     if ans == "y":
