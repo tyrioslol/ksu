@@ -34,6 +34,8 @@ with open(".shells", "r") as f:
 print("USERS WITH SHELLS:")
 for line in userslist.splitlines():
     for ln in shelllist.splitlines():
+        if "nologin" in line:
+            continue
         if ln in line:
             print(line)
 print("Full users in users.txt...\n")
@@ -57,6 +59,8 @@ print("SUDO PERMISSIONS:")
 sudoerslist = results.stdout.decode().splitlines()
 for line in sudoerslist:
     if line.startswith("Defaults"):
+        continue
+    if line.startswith("#"):
         continue
     if "%" in line:
         print("Group: ", line)
