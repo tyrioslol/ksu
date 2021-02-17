@@ -2,7 +2,12 @@
 
 Set root password:
 ```
-su root > passwd > nano /etc/sudoers > add line “Defaults	rootpw”
+!!!!IMPORTANT!!!!
+DO THIS FIRST:
+su root > passwd 
+
+DO THIS SECOND:
+sudo visudo > add line “Defaults	rootpw”
 
 Defaults    env_reset
 Defaults    mail_badpass
