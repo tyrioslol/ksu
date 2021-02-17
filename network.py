@@ -159,8 +159,7 @@ while True:
     print("\nWould you like to run linpeas now? (y/n)")
     ans = input()
     if ans == "y":
-        print("Scanning...")
-        os.system("./linpeas.sh > linpeas.txt")
+        print("INFO: linpeas is present on your system.\nSimply su into another user and run the script with ./linpeas.sh.")
         print("Done")
         break
     if ans == "n":
