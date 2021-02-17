@@ -22,6 +22,7 @@ sudo yum update
 
 Show Users: 
 ```
+cat /etc/passwd
 cat /etc/passwd | grep /bin/bash && cat /etc/passwd | grep /bin/sh
 ```
 Delete Users: 
