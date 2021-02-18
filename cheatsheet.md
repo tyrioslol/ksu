@@ -4,10 +4,13 @@ Set root password:
 ```
 !!!!IMPORTANT!!!!
 DO THIS FIRST:
-su root > passwd 
+  1. su root
+  2. passwd
+  3. set new password 
 
 DO THIS SECOND:
-sudo visudo > add line “Defaults	rootpw”
+  1. sudo visudo
+  2. add line “Defaults	rootpw”
 
 Defaults    env_reset
 Defaults    mail_badpass
