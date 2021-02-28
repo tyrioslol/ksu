@@ -4,6 +4,30 @@ import sys
 if not os.geteuid()==0:
     sys.exit('This script must be run as root!')
 
+os.system("clear")
+
+# Check DNS
+print("Checking DNS Settings...")
+os.system("cat /etc/resolv.conf | grep nameserver")
+
+while True:
+    print("\nWould you like to change your DNS server? (y/n)")
+    ans = input()
+    if ans == "y":
+        print("Updating...")
+        os.system("echo 'nameserver 8.8.8.8' > /etc/resolv.conf")
+        break
+    if ans == "n":
+        print("Moving on...")
+        break
+    if ans != "y" or ans != "n":
+        print("Invalid: Must be y/n")
+        continue
+
+os.system("clear")
+input("Done: Press Enter to continue...")
+os.system("clear")
+    
 # what os are you
 while True:
     print("I'm a dumb script. What OS are you running on? (ubuntu/debian/centos/fedora)")
