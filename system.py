@@ -5,33 +5,29 @@ import subprocess
 if not os.geteuid()==0:
     sys.exit('This script must be run as root!')
 
+os.system("clear")
+
+# Check DNS
+print("Checking DNS Settings...")
+os.system("cat /etc/resolv.conf | grep nameserver")
+
 while True:
-    print("I'm a dumb script. What OS are you running on? (ubuntu/debian/centos/fedora)")
+    print("\nWould you like to change your DNS server? (y/n)")
     ans = input()
-    if ans == "fedora":
-        print("Fedora selected.")
-        _os = "cent"
+    if ans == "y":
+        print("Updating...")
+        os.system("echo 'nameserver 8.8.8.8' > /etc/resolv.conf")
         break
-    if ans == "centos":
-        print("CentOS selected.")
-        _os = "cent"
+    if ans == "n":
+        print("Moving on...")
         break
-    if ans == "ubuntu":
-        print("Ubuntu selected.")
-        _os = "debian"
-        break
-    if ans == "debian":
-        print("Debian selected.")
-        _os = "debian"
-        break
-    if ans != "ubuntu" or ans != "debian" or ans != "centos" or ans != "fedora":
-        print("Invalid: Must be ubuntu/debian/centos/fedora")
+    if ans != "y" or ans != "n":
+        print("Invalid: Must be y/n")
         continue
 
-# uncomment this line for update & root password
-# os.system("passwd")
-# os.system("sudo apt-get update && sudo apt-get upgrade -y")
-
+os.system("clear")
+input("Done: Press Enter to continue...")
+os.system("clear")
 
 # Getting user info from /etc/passwd
 users = os.system("cat /etc/passwd > users.txt")
@@ -63,6 +59,23 @@ for line in userslist.splitlines():
             print(line)
 print("Full users in users.txt...\n")
 
+while True:
+    print("\nWould you like to remove any users? (y/n)")
+    ans = input()
+    if ans == "y":
+        user = input("Which user would you like to remove?")
+        os.system("deluser " + user + " && rm -rf /home/" + user)
+    if ans == "n":
+        print("Moving on...")
+        break
+    if ans != "y" and ans != "n":
+        print("Invalid: Must be y/n")
+        continue
+
+os.system("clear")
+input("Done: Press Enter to continue...")
+os.system("clear")
+
 ###GROUPS###
 # Get group info from /etc/group
 groups = os.system("cat /etc/group > groups.txt")
@@ -74,48 +87,80 @@ with open("groups.txt", "r") as f:
     for line in f:
         grouplist += line
 
+###SUDOERS###
+# Get sudoers info from /etc/sudoers and print findings
+results = subprocess.check_output(["cat", "/etc/sudoers"])
 
-if _os == "cent":
-    ###SUDOERS###
-    # Get sudoers info from /etc/sudoers and print findings
-    results = subprocess.check_output(["cat", "/etc/sudoers"])
+print("SUDO PERMISSIONS:")
+sudoerslist = results.decode().splitlines()
+for line in sudoerslist:
+    if line.startswith("Defaults"):
+        continue
+    if line.startswith("#"):
+        continue
+    if "%" in line:
+        print("Group: ", line)
+        continue
+    if "=" in line:
+        print("User: ", line)
 
-    print("SUDO PERMISSIONS:")
-    sudoerslist = results.decode().splitlines()
-    for line in sudoerslist:
-        if line.startswith("Defaults"):
-            continue
-        if line.startswith("#"):
-            continue
-        if "%" in line:
-            print("Group: ", line)
-            continue
-        if "=" in line:
-            print("User: ", line)
+while True:
+    print("\nWould you like to remove any sudoers (This must be done manually from the sudoers file)? (y/n)")
+    ans = input()
+    if ans == "y":
+        os.system("visudo")
+    if ans == "n":
+        print("Moving on...")
+        break
+    if ans != "y" and ans != "n":
+        print("Invalid: Must be y/n")
+        continue
 
-elif _os == "debian":
-    ###SUDOERS###
-    # Get sudoers info from /etc/sudoers and print findings
-    results = subprocess.run(["cat", "/etc/sudoers"], stdout=subprocess.PIPE)
+os.system("clear")
+input("Done: Press Enter to continue...")
+os.system("clear")
 
-    print("SUDO PERMISSIONS:")
-    sudoerslist = results.stdout.decode().splitlines()
-    for line in sudoerslist:
-        if line.startswith("Defaults"):
-            continue
-        if line.startswith("#"):
-            continue
-        if "%" in line:
-            print("Group: ", line)
-            continue
-        if "=" in line:
-            print("User: ", line)
+print("Looking for sudo group members...")
+os.system("cat /etc/group | grep sudo")
+
+while True:
+    print("\nWould you like to remove a user from the sudo group? (y/n)")
+    ans = input()
+    if ans == "y":
+        user = input("What user would you like to remove from the sudo group?")
+        os.system("deluser " + user + " sudo")
+    if ans == "n":
+        print("Moving on...")
+        break
+    if ans != "y" and ans != "n":
+        print("Invalid: Must be y/n")
+        continue
+
+os.system("clear")
+
+print("Looking for admin group members...")
+os.system("cat /etc/group | grep admin")
+
+while True:
+    print("\nWould you like to remove a user from the admin group? (y/n)")
+    ans = input()
+    if ans == "y":
+        user = input("What user would you like to remove from the admin group?")
+        os.system("deluser " + user + " admin")
+    if ans == "n":
+        print("Moving on...")
+        break
+    if ans != "y" and ans != "n":
+        print("Invalid: Must be y/n")
+        continue
 
 os.system("cat /etc/group > groups.txt")
 print("Full groups saved to groups.txt...")
+input("Done: Press Enter to continue...")
+os.system("clear")
 
 # Show files with sensitive permissions
-print("\nSENSITIVE PERMISSIONS: (Should be -rw-r--r-- and -rw-r-----)")
+print("SENSITIVE PERMISSIONS: (Should be -rw-r--r-- and -rw-r-----)")
 os.system("ls -al /etc/passwd && ls -al /etc/shadow")
 os.system("find / -user root -type f -perm 777 2>/dev/null")
 os.system("find / -user root -type f -perm 766 2>/dev/null")
@@ -126,3 +171,5 @@ print("Done, file saved to .suid.")
 print("\nFinding Files with GUID...")
 os.system("find / -perm /2000 -type f 2>/dev/null > .guid")
 print("Done, file saved to .guid.")
+
+print("\nAll done, thanks for playing!")
