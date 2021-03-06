@@ -29,6 +29,28 @@ os.system("clear")
 input("Done: Press Enter to continue...")
 os.system("clear")
 
+# backup services
+svc_config_backup = input("\n>>> Create backups of config files? Type y or n, then hit enter:  ")
+    if svc_config_backup == "y":
+        svc_name = input("\n>>> What is the scored service? Type openvpn, wordpress, mysql, or docker:  ")
+        if svc_name == "openvpn":
+            os.system("cp -r /etc/openvpn /home/openvpn")
+            print("\n>>> backups saved to /home/openvpn")
+        elif svc_name == "wordpress":
+            os.system("cp -r /etc/apache2/apache2.conf /home/apache")
+            print("\n>>> backups saved to /home/apache")
+        elif svc_name == "mysql":
+            os.system("cp -r /etc/my.cnf /home/mysql")
+            print("\n>>> backups saved to /home/mysql")
+        elif svc_name == "docker":
+            os.system("cp -r /etc/docker /home/docker-frometc")
+            os.system("cp -r /var/lib/docker /home/docker-fromvar")
+            print("\n>>> backups saved to /home/docker")
+        else:
+            print("\n>>> Unknown service.")
+    else:
+        print("\n>>> OK")
+
 # Getting user info from /etc/passwd
 users = os.system("cat /etc/passwd > users.txt")
 
