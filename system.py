@@ -16,7 +16,7 @@ while True:
     ans = input()
     if ans == "y":
         print("Updating...")
-        os.system("echo 'nameserver 8.8.8.8' > /etc/resolv.conf")
+        os.system("nano /etc/resolv.conf")
         break
     if ans == "n":
         print("Moving on...")
