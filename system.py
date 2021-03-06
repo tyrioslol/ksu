@@ -48,7 +48,7 @@ if svc_config_backup == "y":
         print("\n>>> backups saved to /home/docker")
     else:
         print("\n>>> Unknown service.")
- else:
+else:
     print("\n>>> OK")
 
 # Getting user info from /etc/passwd
