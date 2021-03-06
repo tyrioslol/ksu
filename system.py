@@ -16,7 +16,7 @@ while True:
     ans = input()
     if ans == "y":
         print("Updating...")
-        os.system("nano /etc/resolv.conf")
+        os.system("vi /etc/resolv.conf")
         break
     if ans == "n":
         print("Moving on...")
