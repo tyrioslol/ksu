@@ -51,6 +51,10 @@ if svc_config_backup == "y":
 else:
     print("\n>>> OK")
 
+os.system("clear")
+input("Done: Press Enter to continue...")
+os.system("clear")
+
 # Getting user info from /etc/passwd
 users = os.system("cat /etc/passwd > users.txt")
 
