@@ -23,6 +23,13 @@ sudo apt-get update && sudo apt-get upgrade -y
 sudo yum update
 ```
 
+Change MySQL Root Password:
+```
+mysql -u root -p
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('supersecurepassword');
+FLUSH PRIVILEGES;
+```
+
 Show Users: 
 ```
 cat /etc/passwd
