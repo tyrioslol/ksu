@@ -7,16 +7,117 @@ DO THIS FIRST:
   1. su root
   2. passwd
   3. set new password 
-
-DO THIS SECOND:
-  1. sudo visudo
-  2. add line “Defaults	rootpw”
-
-Defaults    env_reset
-Defaults    mail_badpass
-Defaults    secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
-Defaults    rootpw
 ```
+
+Wazuh Server:
+```
+curl -so ~/unattended-installation.sh https://packages.wazuh.com/resources/4.2/open-distro/unattended-installation/unattended-installation.sh && bash ~/unattended-installation.sh
+```
+
+Wazuh Agent:
+```
+APT-
+  
+  Install the agent:
+  
+  $ curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
+  $ echo "deb https://packages.wazuh.com/4.x/apt/ stable main" | tee -a /etc/apt/sources.list.d/wazuh.list
+  $ apt-get update
+  $ WAZUH_MANAGER="10.0.0.2" apt-get install wazuh-agent
+  $ /var/ossec/bin/agent-auth -m <manager_IP>
+  
+  Registering the agent:
+  
+  $ /var/ossec/bin/agent-auth -m <manager_IP>
+  $ nano /var/ossec/etc/ossec.conf
+  <client>
+    <server>
+      <address>MANAGER_IP</address>
+    </server>
+  </client>
+  $ systemctl restart wazuh-agent
+  
+  install/enable auditd:
+  
+  $ sudo apt-get install audit
+  $ nano /var/ossec/etc/ossec.conf
+  ## Add this near the end of the config file. You can just copy and paste from one of the others to make it easier.
+  <localfile>
+   <log_format>audit</log_format>
+   <location>/var/log/audit/audit.log</location>
+  </localfile>
+  
+  Monitor directories:
+  
+  $ auditctl -w /home -p w -k audit-wazuh-w
+  $ auditctl -w /etc -p w -k audit-wazuh-w
+  $ auditctl -w /usr -p w -k audit-wazuh-w
+  $ auditctl -w /bin -p w -k audit-wazuh-w
+  $ auditctl -w /tmp -p w -k audit-wazuh-w
+  $ auditctl -w /sbin -p w -k audit-wazuh-w
+  $ auditctl -w /opt -p w -k audit-wazuh-w
+  $ auditctl -w /boot -p w -k audit-wazuh-w
+  
+  Monitor command execution by user with admin privs:
+
+  $ auditctl -a exit,always -F euid=0 -F arch=b64 -S execve -k audit-wazuh-c
+  $ auditctl -a exit,always -F euid=0 -F arch=b32 -S execve -k audit-wazuh-c
+```
+```
+Yum-
+  
+  Install the agent:
+  
+  $ rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH
+  $ cat > /etc/yum.repos.d/wazuh.repo << EOF
+  [wazuh]
+  gpgcheck=1
+  gpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH
+  enabled=1
+  name=EL-\$releasever - Wazuh
+  baseurl=https://packages.wazuh.com/4.x/yum/
+  protect=1
+  EOF
+  $ WAZUH_MANAGER="10.0.0.2" yum install wazuh-agent
+  
+  Registering the agent:
+  
+  $ /var/ossec/bin/agent-auth -m <manager_IP>
+  $ nano /var/ossec/etc/ossec.conf
+  <client>
+    <server>
+      <address>MANAGER_IP</address>
+    </server>
+  </client>
+  $ systemctl restart wazuh-agent
+  
+  install/enable auditd:
+  
+  $ sudo yum install auditd
+  $ nano /var/ossec/etc/ossec.conf
+  ## Add this near the end of the config file. You can just copy and paste from one of the others to make it easier.
+  <localfile>
+   <log_format>audit</log_format>
+   <location>/var/log/audit/audit.log</location>
+  </localfile>
+  
+  Monitor directories:
+  
+  $ auditctl -w /home -p w -k audit-wazuh-w
+  $ auditctl -w /etc -p w -k audit-wazuh-w
+  $ auditctl -w /usr -p w -k audit-wazuh-w
+  $ auditctl -w /bin -p w -k audit-wazuh-w
+  $ auditctl -w /tmp -p w -k audit-wazuh-w
+  $ auditctl -w /sbin -p w -k audit-wazuh-w
+  $ auditctl -w /opt -p w -k audit-wazuh-w
+  $ auditctl -w /boot -p w -k audit-wazuh-w
+  
+  Monitor command execution by user with admin privs:
+
+  $ auditctl -a exit,always -F euid=0 -F arch=b64 -S execve -k audit-wazuh-c
+  $ auditctl -a exit,always -F euid=0 -F arch=b32 -S execve -k audit-wazuh-c
+```
+
 Update:
 ```
 sudo apt-get update && sudo apt-get upgrade -y
@@ -35,49 +136,54 @@ Show Users:
 cat /etc/passwd
 cat /etc/passwd | grep /bin/bash && cat /etc/passwd | grep /bin/sh
 ```
+
 Delete Users: 
 ```
 sudo userdel username / sudo deluser username
 ```
-Remove Home Directory: 
-```
-sudo rm -rf /home/username
-```
+
 Show Groups:
 ```
 cat /etc/group
 cat /etc/group | grep sudo && cat /etc/group | grep admin
 ```
+
 Remove Users from Group:
 2 Methods:
 ```
 sudo gpasswd -d username group
 sudo nano /etc/group
 ```
+
 Install nmap:
 ```
 sudo apt-get install net-tools
 sudo apt install nmap
 sudo yum install nmap
 ```
+
 Use nmap to enumerate services:
 ```
 nmap -sT -sV 127.0.0.1 > services.txt
 nmap -p- 127.0.0.1 (run in background) > allports.txt
 ```
+
 UDP scan: 
 ```
 nmap -sU localhost
 ```
+
 Verify and Identify Service:
 ```
 sudo netstat -tulpn | grep LISTEN
 ```
+
 Kill Process:
 ```
 sudo killall process_name
 sudo kill processid
 ```
+
 Configure SSH:
 ```
 nano /etc/ssh/sshd_config
@@ -92,59 +198,3 @@ sudo service sshd status
 sudo systemctl stop sshd
 sudo systemctl status sshd
 ```
-Start SSH:
-```
-sudo service sshd start
-sudo service sshd status
-OR
-sudo systemctl start sshd
-sudo systemctl status sshd
-```
-
-Install fail2ban:
-```
-sudo apt install fail2ban
-sudo yum install fail2ban
-sudo dnf install fail2ban
-
-sudo fail2ban-client status
-```
-
-View Auth Logs:
-```
-/var/log/auth.log
-```
-
-Install UFW:
-```
-sudo apt-get install ufw
-sudo ufw enable
-sudo ufw status
-```
-Fedora Firewall:
-```
-firewall-config
-```
-CentOS Firewall:
-```
-sudo firewall-cmd --list-all
-sudo firewall-cmd --add-service=http <- allows communication over http.
-sudo firewall-cmd --add-port=5000-6000/tcp <- allows communication over ports 5000 to 6000.
-https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-using-firewalld-on-centos-7
-```
-
-
-Configure UFW:
-```
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-(Case by case) sudo ufw allow ssh,http,https,dns,22,80,443,53
-```
-
-
-To Do:
-Mysql hardening
-FTP hardening
-SMB hardening
-RDP hardening (Port 3389)
-Telnet hardening (Take down)
