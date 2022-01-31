@@ -36,10 +36,10 @@ do
             apt-get install auditd -y
             apt-get install audit -y
             echo "copy this and add at line 209:
-            <localfile>
-            <log_format>audit</log_format>
-            <location>/var/log/audit/audit.log</location>
-            </localfile>"
+  <localfile>
+    <log_format>audit</log_format>
+    <location>/var/log/audit/audit.log</location>
+  </localfile>"
             read -p "Press enter to continue"
             nano /var/ossec/etc/ossec.conf
 
@@ -90,10 +90,10 @@ protect=1"
             yum install auditd -y
             yum install audit -y
             echo "copy this and add at line 209:
-            <localfile>
-            <log_format>audit</log_format>
-            <location>/var/log/audit/audit.log</location>
-            </localfile>"
+  <localfile>
+    <log_format>audit</log_format>
+    <location>/var/log/audit/audit.log</location>
+  </localfile>"
             read -p "Press enter to continue"
             nano /var/ossec/etc/ossec.conf
 
