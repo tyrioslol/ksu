@@ -19,10 +19,10 @@ do
         then
 
             # install agent and register to server
+            apt-get update
             apt-get install apt-transport-https nano gnupg gnupg2 gnupg1 -y
             curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
             echo "deb https://packages.wazuh.com/4.x/apt/ stable main" | tee -a /etc/apt/sources.list.d/wazuh.list
-            apt-get update
             WAZUH_MANAGER=$manager_ip apt-get install wazuh-agent -y
             /var/ossec/bin/agent-auth -m $manager_ip -A $hostname
 
