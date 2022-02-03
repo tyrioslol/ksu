@@ -27,6 +27,7 @@ do
             /var/ossec/bin/agent-auth -m $manager_ip -A $hostname
 
             # validate agent config
+            clear
             echo "valdate the manager ip in the config. 
             should be $manager_ip"
             read -p "Press enter to continue"
@@ -35,6 +36,8 @@ do
             # do audit stuff
             apt-get install auditd -y
             apt-get install audit -y
+            clear
+            echo "check to make sure this doesn't already exist"
             echo "copy this and add at line 209:
   <localfile>
     <log_format>audit</log_format>
@@ -81,6 +84,7 @@ protect=1"
             /var/ossec/bin/agent-auth -m $manager_ip -A $hostname
 
             # validate agent config
+            clear
             echo "valdate the manager ip in the config. 
             should be $manager_ip"
             read -p "Press enter to continue"
@@ -89,6 +93,8 @@ protect=1"
             # do audit stuff
             yum install auditd -y
             yum install audit -y
+            clear
+            echo "check to make sure this doesn't already exist"
             echo "copy this and add at line 209:
   <localfile>
     <log_format>audit</log_format>
