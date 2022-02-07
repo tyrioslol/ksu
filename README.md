@@ -7,11 +7,13 @@ git clone https://github.com/tyrioslol/ksu.git
 ```
 
 Usage:
+```bash
+cd prevent
+chmod +x user_protect.sh
+./user_protect.sh
 ```
-cd ksu
-python3 system.py
-```
-```
-cd ksu
-python3 network.py
+```bash
+cd wazuh
+chmod +x wazuh_agent.sh
+./wazuh_agent.sh
 ```
