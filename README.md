@@ -35,4 +35,10 @@ select User, Host from mysql.user;
 DROP 'testaccount'@'localhost'
 show processlist;
 KILL Id_number;
+
+# check cronjobs
+for user in $(cut -f1 -d: /etc/passwd); do crontab -u $user -l; done
+
+# check listening ports
+netstat -tulpn | grep LISTEN
 ```
